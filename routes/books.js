@@ -1,5 +1,7 @@
 const express=require("express")
 const {books}=require("../data/books.json");
+const {users}=require("../data/users.json");
+
 const router=express.Router();
 
 
@@ -102,6 +104,46 @@ router.put('/:id', (req, res)=>{
         data: updateBook
     })
 
+})
+
+/**
+*route: /books/:issued/by-user
+*method:GET
+*descriptions: Get all issued books
+*access:Public
+*parameter: None
+*/
+
+router.get("/issued/by-user",(req,res)=>{
+    const userWithIssuedBooks = users.find((each)=>{
+        if (each.issuedBook) return each;
+    })
+
+    const issuedbooks = [];
+
+    
+
+    userWithIssuedBooks.forEach((each)=>{
+        const book = books.find((book)=> book.id === each.issueBook);
+
+        book.issuedBy = each.name;
+        book.issuedDate = each.issuedDate;
+        book.returnDate = each.returnDate;
+
+        issuedbooks.push(book);
+    })
+
+    if (issuedbooks.length===0){
+        return res.status(404).json({
+            success:false,
+            message: "No Books issued Yet"
+        })
+    }
+
+    return res.status(200).json({
+        success:true,
+        data:issuedbooks,
+    })
 })
 
 module.exports = router;

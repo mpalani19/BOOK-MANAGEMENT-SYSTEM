@@ -1,4 +1,4 @@
-# Book Record Managamnet System
+# Book Record Management System
 
 # Routes and Endpoints
 
